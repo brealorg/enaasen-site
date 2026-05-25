@@ -7,6 +7,40 @@
     element.classList.remove("pending");
   };
 
+  const getDeployInfo = () => {
+    return window.DEPLOY_INFO || null;
+  };
+
+  const formatUptime = (date) => {
+    const diffMs = Date.now() - date.getTime();
+
+    if (!Number.isFinite(diffMs) || diffMs < 0) {
+      return "unknown";
+    }
+
+    const totalMinutes = Math.floor(diffMs / 60000);
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const minutes = totalMinutes % 60;
+
+    if (days > 0) return `${days}d ${hours}h`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
+  };
+
+  const updateUptime = () => {
+    const deployInfo = getDeployInfo();
+
+    if (!deployInfo?.commitTime) {
+      setField("uptime", "unknown");
+      setField("commit", "unknown");
+      return;
+    }
+
+    setField("uptime", formatUptime(new Date(deployInfo.commitTime)));
+    setField("commit", deployInfo.commit || "unknown");
+  };
+
   const parseTrace = (text) => {
     const result = {};
 
@@ -44,6 +78,9 @@
     if (/Linux/i.test(ua)) return "Linux";
     return "unknown";
   };
+
+  updateUptime();
+  window.setInterval(updateUptime, 60000);
 
   const localUa = navigator.userAgent || "unknown";
 

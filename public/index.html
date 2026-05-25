@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>enaasen.no</title>
   <meta name="description" content="A small static site built with Cloudflare and GitHub.">
+
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -17,7 +20,17 @@
         </span>
 
         <span class="brand-text">
-          <span class="brand-title">enaasen.no</span>
+          <span class="brand-line">
+            <span class="brand-title">enaasen.no</span>
+
+            <span class="uptime-pill" title="Time since latest deployed commit">
+              <span class="uptime-dot" aria-hidden="true"></span>
+              uptime: <span data-field="uptime">calculating...</span>
+              <span class="commit-separator">/</span>
+              <span data-field="commit">commit</span>
+            </span>
+          </span>
+
           <span class="brand-subtitle">static / pointless / functional</span>
         </span>
       </a>
@@ -25,11 +38,6 @@
 
     <main class="site-main">
       <section aria-labelledby="main-title">
-        <div class="status-pill">
-          <span class="dot" aria-hidden="true"></span>
-          online, unfortunately
-        </div>
-
         <h1 id="main-title">
           No blog.
           <span class="muted-line">Not a portfolio.</span>
@@ -105,6 +113,7 @@ ua:          <span class="value pending" data-field="ua">detecting...</span></co
     </footer>
   </div>
 
+  <script src="deploy-info.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
