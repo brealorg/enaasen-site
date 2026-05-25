@@ -1,41 +1,35 @@
 <!doctype html>
-<html lang="no">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Enåsen</title>
-  <meta name="description" content="Laget med Cloudflare og GitHub.">
-  <meta name="theme-color" content="#050506">
+  <title>enaasen.no</title>
+  <meta name="description" content="A small static site built with Cloudflare and GitHub.">
 
   <style>
     :root {
-      --bg: #050506;
-      --panel: rgba(13, 13, 16, 0.82);
-      --line: rgba(255, 255, 255, 0.10);
-      --text: #f5f5f5;
-      --muted: #9ca3af;
-      --red: #e11919;
-      --red-soft: rgba(225, 25, 25, 0.20);
-      --shadow: 0 30px 100px rgba(0, 0, 0, 0.65);
+      --bg: #080808;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --faint: #71717a;
+      --border: rgba(255, 255, 255, 0.12);
+      --panel: rgba(255, 255, 255, 0.045);
+      --accent: #a3e635;
+      --accent-soft: rgba(163, 230, 53, 0.12);
+      --shadow: rgba(163, 230, 53, 0.18);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html,
-    body {
-      margin: 0;
+    html {
       min-height: 100%;
     }
 
     body {
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 22px;
-      overflow-x: hidden;
-      color: var(--text);
+      margin: 0;
       font-family:
         Inter,
         ui-sans-serif,
@@ -44,326 +38,599 @@
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at 50% -10%, rgba(225, 25, 25, 0.22), transparent 34%),
-        radial-gradient(circle at 85% 110%, rgba(255, 255, 255, 0.06), transparent 30%),
-        linear-gradient(180deg, #101014 0%, var(--bg) 58%);
+        radial-gradient(circle at 50% -18%, rgba(163, 230, 53, 0.16), transparent 34%),
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 42px 42px, 42px 42px;
+      line-height: 1.5;
     }
 
-    .noise {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.035;
-      background-image:
-        linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: radial-gradient(circle at center, black, transparent 72%);
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    .wrap {
-      position: relative;
-      width: min(100%, 980px);
+    ::selection {
+      color: #111;
+      background: var(--accent);
     }
 
-    .wrap::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: 34px;
-      padding: 1px;
-      background:
-        linear-gradient(135deg, rgba(225,25,25,.85), rgba(255,255,255,.08), rgba(225,25,25,.15));
-      -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      opacity: 0.9;
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
     }
 
-    .card {
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      min-height: 520px;
-      overflow: hidden;
-      border-radius: 34px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)),
-        var(--panel);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
     }
 
     .brand {
-      position: relative;
-      display: grid;
-      place-items: center;
-      padding: 42px;
-      border-right: 1px solid var(--line);
-      background:
-        radial-gradient(circle at 50% 45%, var(--red-soft), transparent 34%),
-        linear-gradient(145deg, rgba(255,255,255,.03), rgba(255,255,255,0));
-    }
-
-    .brand::after {
-      content: "";
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      bottom: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--red), transparent);
-      opacity: 0.75;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
     }
 
     .logo {
-      width: min(100%, 360px);
-      filter:
-        drop-shadow(0 28px 38px rgba(0,0,0,.75))
-        drop-shadow(0 0 22px rgba(225,25,25,.12));
-      transform: rotate(-2deg);
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(163, 230, 53, 0.55);
+      border-radius: 12px;
+      background: var(--accent);
+      color: #111;
+      font-size: 1rem;
+      font-weight: 950;
+      box-shadow: 0 0 32px var(--shadow);
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease;
     }
 
-    .content {
+    .brand:hover .logo {
+      transform: rotate(-3deg) scale(1.03);
+      box-shadow: 0 0 44px var(--shadow);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 850;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--faint);
+      font-size: 0.78rem;
+    }
+
+    nav {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 56px;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .kicker {
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.035);
+      color: #d4d4d8;
+      font-size: 0.9rem;
+      font-weight: 750;
+      transition:
+        transform 150ms ease,
+        border-color 150ms ease,
+        background 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(163, 230, 53, 0.55);
+      background: var(--accent-soft);
+      color: #ecfccb;
+    }
+
+    .button:active {
+      transform: translateY(0) scale(0.97);
+    }
+
+    .button.primary {
+      border-color: transparent;
+      background: var(--accent);
+      color: #111;
+      box-shadow: 0 12px 44px var(--shadow);
+    }
+
+    .button.primary:hover {
+      background: #bef264;
+      color: #111;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      align-items: center;
+      padding: 72px 0;
+    }
+
+    .status-pill {
+      width: fit-content;
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      width: fit-content;
-      margin-bottom: 22px;
-      color: var(--muted);
-      font-size: 0.78rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-weight: 700;
+      padding: 8px 14px;
+      border: 1px solid rgba(163, 230, 53, 0.22);
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #d9f99d;
+      font-size: 0.9rem;
+      font-weight: 750;
     }
 
-    .kicker::before {
-      content: "";
-      width: 9px;
-      height: 9px;
+    .dot {
+      width: 8px;
+      height: 8px;
       border-radius: 999px;
-      background: var(--red);
-      box-shadow: 0 0 22px rgba(225, 25, 25, 0.9);
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(163, 230, 53, 0.95);
     }
 
     h1 {
+      max-width: 950px;
+      margin: 30px 0 0;
+      font-size: clamp(3rem, 9vw, 7.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.075em;
+      font-weight: 950;
+    }
+
+    .muted-line {
+      display: block;
+      color: #71717a;
+    }
+
+    .accent-line {
+      display: block;
+      color: var(--accent);
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.95fr);
+      gap: 18px;
+      margin-top: 42px;
+    }
+
+    .terminal {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        Menlo,
+        monospace;
+    }
+
+    .visitor-trace {
+      border-style: dashed;
+    }
+
+    .terminal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.28);
+      color: var(--faint);
+      font-size: 0.82rem;
+    }
+
+    .terminal-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .terminal-block {
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 16px var(--shadow);
+    }
+
+    .terminal-host {
+      color: #d4d4d8;
+      white-space: nowrap;
+    }
+
+    .terminal-shell {
+      color: var(--faint);
+      white-space: nowrap;
+    }
+
+    pre {
       margin: 0;
-      font-size: clamp(3.2rem, 7.5vw, 6.2rem);
-      line-height: 0.86;
-      letter-spacing: -0.085em;
-      font-weight: 900;
+      padding: 22px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      color: #d4d4d8;
+      font-size: 0.95rem;
+      line-height: 1.75;
     }
 
-    .line {
-      width: 76px;
-      height: 4px;
-      margin: 28px 0 24px;
-      border-radius: 99px;
-      background: linear-gradient(90deg, var(--red), transparent);
+    code {
+      font: inherit;
     }
 
-    p {
-      margin: 0;
-      color: var(--muted);
-      font-size: clamp(1rem, 2vw, 1.15rem);
-      line-height: 1.7;
+    .prompt-user {
+      color: var(--accent);
+      font-weight: 850;
     }
 
-    .stack {
+    .prompt-path {
+      color: #f4f4f5;
+      font-weight: 750;
+    }
+
+    .prompt-command {
+      color: #d4d4d8;
+    }
+
+    .value {
+      color: #f4f4f5;
+    }
+
+    .value.pending {
+      color: var(--faint);
+    }
+
+    .trace-note {
+      margin: -4px 22px 22px;
+      color: var(--faint);
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+
+    .actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 32px;
-    }
-
-.pill {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: 0 14px;
-  border-radius: 999px;
-  color: #e5e7eb;
-  background: rgba(255, 255, 255, 0.055);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  font-size: 0.88rem;
-  font-weight: 650;
-  text-decoration: none;
-  overflow: hidden;
-  isolation: isolate;
-  transition:
-    transform 160ms ease,
-    border-color 160ms ease,
-    background 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.pill::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: 0;
-  background:
-    radial-gradient(circle at center, rgba(255,255,255,0.16), transparent 58%);
-  transition: opacity 160ms ease;
-}
-
-.pill:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.085);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
-}
-
-.pill:hover::before {
-  opacity: 1;
-}
-
-.pill:active {
-  transform: translateY(0) scale(0.97);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.22);
-}
-
-.pill:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.75);
-  outline-offset: 4px;
-}
-
-.pill.red {
-  background: rgba(225, 25, 25, 0.13);
-  border-color: rgba(225, 25, 25, 0.34);
-  color: #ffffff;
-}
-
-.pill.red:hover {
-  background: rgba(225, 25, 25, 0.22);
-  border-color: rgba(225, 25, 25, 0.58);
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.32),
-    0 0 28px rgba(225,25,25,0.18);
-}
-
-    .foot {
+      gap: 12px;
       margin-top: 34px;
-      color: #6b7280;
-      font-size: 0.84rem;
     }
 
-    @media (max-width: 820px) {
-      body {
-        padding: 14px;
-      }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--faint);
+      font-size: 0.82rem;
+    }
 
-      .card {
+    footer p {
+      margin: 0;
+    }
+
+    @media (max-width: 860px) {
+      .content-grid {
         grid-template-columns: 1fr;
-        min-height: auto;
-        border-radius: 28px;
-      }
-
-      .wrap::before {
-        border-radius: 28px;
-      }
-
-      .brand {
-        min-height: 270px;
-        padding: 28px 24px 12px;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .brand::after {
-        left: 18%;
-        right: 18%;
-      }
-
-      .logo {
-        width: min(78vw, 260px);
-      }
-
-      .content {
-        padding: 30px 24px 32px;
-      }
-
-      .line {
-        margin: 22px 0 20px;
-      }
-
-      .stack {
-        margin-top: 26px;
       }
     }
 
-    @media (max-width: 440px) {
-      .brand {
-        min-height: 230px;
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 24px, 1120px);
+        padding: 18px 0;
       }
 
-      .logo {
-        width: min(82vw, 230px);
+      header {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
-      .content {
-        padding: 26px 20px 28px;
-      }
-
-      .pill {
+      nav {
         width: 100%;
-        justify-content: center;
+        justify-content: flex-start;
+      }
+
+      .button {
+        flex: 1;
+      }
+
+      main {
+        padding: 52px 0;
+      }
+
+      h1 {
+        letter-spacing: -0.055em;
+      }
+
+      .terminal-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .button {
+        width: 100%;
+      }
+
+      pre {
+        font-size: 0.84rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="noise" aria-hidden="true"></div>
+  <div class="page">
+    <header>
+      <a class="brand" href="/" aria-label="enaasen.no">
+        <div class="logo" aria-hidden="true">E</div>
 
-  <main class="wrap">
-    <section class="card" aria-label="Enåsen placeholder">
-      <div class="brand">
-        <img class="logo" src="/logo.png" alt="Enåsen logo">
-      </div>
-
-      <div class="content">
-        <div class="kicker">Privat domene</div>
-
-        <h1>Enåsen</h1>
-
-        <div class="line"></div>
-
-        <p>
-          Laget med Cloudflare og GitHub.
-        </p>
-
-<div class="stack" aria-label="Teknologi">
-  <a class="pill red" href="https://www.cloudflare.com" target="_blank" rel="noopener noreferrer">
-    Cloudflare
-  </a>
-
-  <a class="pill" href="https://github.com/brealorg/enaasen-site" target="_blank" rel="noopener noreferrer">
-    GitHub
-  </a>
-
-  <span class="pill">Static deploy</span>
-</div>
-        <div class="foot">
-          enaasen.no · enåsen.no
+        <div>
+          <p class="brand-title">enaasen.no</p>
+          <p class="brand-subtitle">static / pointless / functional</p>
         </div>
-      </div>
-    </section>
-  </main>
+      </a>
+
+      <nav aria-label="External links">
+        <a
+          class="button"
+          href="https://www.cloudflare.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Cloudflare
+        </a>
+
+        <a
+          class="button"
+          href="https://github.com/brealorg/enaasen-site"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub repo
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <section aria-labelledby="main-title">
+        <div class="status-pill">
+          <span class="dot" aria-hidden="true"></span>
+          online, unfortunately
+        </div>
+
+        <h1 id="main-title">
+          No blog.
+          <span class="muted-line">Not a portfolio.</span>
+          <span class="accent-line">Just a domain.</span>
+        </h1>
+
+        <div class="content-grid">
+          <section class="terminal" aria-label="Technical status">
+            <div class="terminal-top">
+              <div class="terminal-title">
+                <span class="terminal-block" aria-hidden="true"></span>
+                <span class="terminal-host">root@enaasen</span>
+              </div>
+
+              <span class="terminal-shell">bash / tty-ish</span>
+            </div>
+
+            <pre><code><span class="prompt-user">root@enaasen</span><span class="prompt-path">:~$</span> <span class="prompt-command">dig enaasen.no</span>
+
+status:      online
+hosting:     cloudflare
+deploy:      github
+backend:     none
+tracking:    none
+maintenance: hopefully none
+purpose:     unclear, but functional</code></pre>
+          </section>
+
+          <aside class="terminal visitor-trace" aria-label="Visitor trace">
+            <div class="terminal-top">
+              <div class="terminal-title">
+                <span class="terminal-block" aria-hidden="true"></span>
+                <span class="terminal-host">visitor@browser</span>
+              </div>
+
+              <span class="terminal-shell">client trace</span>
+            </div>
+
+            <pre><code><span class="prompt-user">visitor@browser</span><span class="prompt-path">:~$</span> <span class="prompt-command">whoami --network-ish</span>
+
+ip:          <span class="value pending" data-field="ip">detecting...</span>
+country:     <span class="value pending" data-field="country">detecting...</span>
+colo:        <span class="value pending" data-field="colo">detecting...</span>
+http:        <span class="value pending" data-field="http">detecting...</span>
+tls:         <span class="value pending" data-field="tls">detecting...</span>
+warp:        <span class="value pending" data-field="warp">detecting...</span>
+
+browser:     <span class="value pending" data-field="browser">detecting...</span>
+os:          <span class="value pending" data-field="os">detecting...</span>
+language:    <span class="value pending" data-field="language">detecting...</span>
+timezone:    <span class="value pending" data-field="timezone">detecting...</span>
+screen:      <span class="value pending" data-field="screen">detecting...</span>
+
+ua:          <span class="value pending" data-field="ua">detecting...</span></code></pre>
+
+            <p class="trace-note">
+              Displayed client-side. Not stored by this page.
+            </p>
+          </aside>
+        </div>
+
+        <div class="actions">
+          <a
+            class="button primary"
+            href="https://www.cloudflare.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Built with Cloudflare
+          </a>
+
+          <a
+            class="button"
+            href="https://github.com/brealorg/enaasen-site"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View GitHub repo
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>DNS works. Deploy works. Done.</p>
+      <p>Built with Cloudflare + GitHub.</p>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const setField = (name, value) => {
+        const element = document.querySelector(`[data-field="${name}"]`);
+        if (!element) return;
+
+        element.textContent = value || "unknown";
+        element.classList.remove("pending");
+      };
+
+      const parseTrace = (text) => {
+        const result = {};
+
+        text
+          .trim()
+          .split("\n")
+          .forEach((line) => {
+            const index = line.indexOf("=");
+            if (index === -1) return;
+
+            const key = line.slice(0, index);
+            const value = line.slice(index + 1);
+
+            result[key] = value;
+          });
+
+        return result;
+      };
+
+      const detectBrowser = (ua) => {
+        if (/Edg\//.test(ua)) return "Microsoft Edge";
+        if (/OPR\//.test(ua)) return "Opera";
+        if (/Firefox\//.test(ua)) return "Firefox";
+        if (/Chrome\//.test(ua) && !/Chromium\//.test(ua)) return "Chrome";
+        if (/Chromium\//.test(ua)) return "Chromium";
+        if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return "Safari";
+        return "unknown";
+      };
+
+      const detectOs = (ua) => {
+        if (/Android/i.test(ua)) return "Android";
+        if (/iPhone|iPad|iPod/i.test(ua)) return "iOS / iPadOS";
+        if (/Windows/i.test(ua)) return "Windows";
+        if (/Mac OS X|Macintosh/i.test(ua)) return "macOS";
+        if (/Linux/i.test(ua)) return "Linux";
+        return "unknown";
+      };
+
+      const localUa = navigator.userAgent || "unknown";
+
+      setField("browser", detectBrowser(localUa));
+      setField("os", detectOs(localUa));
+      setField("language", navigator.language || "unknown");
+      setField("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown");
+      setField(
+        "screen",
+        `${window.screen.width}x${window.screen.height} @ ${window.devicePixelRatio || 1}x`
+      );
+      setField("ua", localUa);
+
+      fetch("/cdn-cgi/trace", { cache: "no-store" })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Cloudflare trace unavailable");
+          }
+
+          return response.text();
+        })
+        .then((text) => {
+          const trace = parseTrace(text);
+
+          setField("ip", trace.ip);
+          setField("country", trace.loc);
+          setField("colo", trace.colo);
+          setField("http", trace.http);
+          setField("tls", trace.tls);
+          setField("warp", trace.warp);
+
+          if (trace.uag) {
+            setField("browser", detectBrowser(trace.uag));
+            setField("os", detectOs(trace.uag));
+            setField("ua", trace.uag);
+          }
+        })
+        .catch(() => {
+          setField("ip", "unavailable outside Cloudflare");
+          setField("country", "unknown");
+          setField("colo", "unknown");
+          setField("http", "unknown");
+          setField("tls", "unknown");
+          setField("warp", "unknown");
+        });
+    })();
+  </script>
 </body>
 </html>
