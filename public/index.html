@@ -5,294 +5,306 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Enåsen</title>
   <meta name="description" content="Laget med Cloudflare og GitHub.">
-  <meta name="theme-color" content="#0b0b0f">
+  <meta name="theme-color" content="#050506">
 
   <style>
     :root {
-      --bg: #08090c;
-      --bg-soft: #11131a;
-      --card: rgba(255, 255, 255, 0.06);
-      --card-border: rgba(255, 255, 255, 0.10);
-      --text: #f5f7fb;
-      --muted: #b0b5c2;
-      --accent: #d11717;
-      --accent-2: #ff4d4d;
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
-      --radius: 28px;
+      --bg: #050506;
+      --panel: rgba(13, 13, 16, 0.82);
+      --line: rgba(255, 255, 255, 0.10);
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --red: #e11919;
+      --red-soft: rgba(225, 25, 25, 0.20);
+      --shadow: 0 30px 100px rgba(0, 0, 0, 0.65);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
-      padding: 0;
       min-height: 100%;
     }
 
     body {
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   Roboto, Helvetica, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top, rgba(209, 23, 23, 0.16), transparent 32%),
-        radial-gradient(circle at bottom, rgba(255, 255, 255, 0.04), transparent 28%),
-        linear-gradient(180deg, #11131a 0%, #08090c 100%);
+      min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 20px;
+      padding: 22px;
       overflow-x: hidden;
+      color: var(--text);
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(225, 25, 25, 0.22), transparent 34%),
+        radial-gradient(circle at 85% 110%, rgba(255, 255, 255, 0.06), transparent 30%),
+        linear-gradient(180deg, #101014 0%, var(--bg) 58%);
     }
 
-    .ambient {
+    .noise {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .ambient::before,
-    .ambient::after {
-      content: "";
-      position: absolute;
-      border-radius: 999px;
-      filter: blur(60px);
-      opacity: 0.22;
-    }
-
-    .ambient::before {
-      width: 320px;
-      height: 320px;
-      background: #c41212;
-      top: -40px;
-      left: -60px;
-    }
-
-    .ambient::after {
-      width: 260px;
-      height: 260px;
-      background: #ffffff;
-      bottom: -80px;
-      right: -60px;
-      opacity: 0.08;
+      opacity: 0.035;
+      background-image:
+        linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at center, black, transparent 72%);
     }
 
     .wrap {
       position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 960px;
+      width: min(100%, 980px);
+    }
+
+    .wrap::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 34px;
+      padding: 1px;
+      background:
+        linear-gradient(135deg, rgba(225,25,25,.85), rgba(255,255,255,.08), rgba(225,25,25,.15));
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.9;
     }
 
     .card {
       display: grid;
       grid-template-columns: 0.95fr 1.05fr;
-      align-items: center;
-      gap: 0;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      min-height: 520px;
       overflow: hidden;
-    }
-
-    .visual {
-      min-height: 460px;
-      display: grid;
-      place-items: center;
-      padding: 2.5rem;
-      border-right: 1px solid rgba(255,255,255,0.06);
+      border-radius: 34px;
       background:
-        radial-gradient(circle at 50% 35%, rgba(209, 23, 23, 0.14), transparent 30%),
-        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+        linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)),
+        var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
     }
 
-    .logo-shell {
+    .brand {
       position: relative;
-      width: min(100%, 360px);
-      aspect-ratio: 1 / 1;
       display: grid;
       place-items: center;
+      padding: 42px;
+      border-right: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 50% 45%, var(--red-soft), transparent 34%),
+        linear-gradient(145deg, rgba(255,255,255,.03), rgba(255,255,255,0));
     }
 
-    .logo-shell::before {
+    .brand::after {
       content: "";
       position: absolute;
-      inset: 10%;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle, rgba(255,255,255,0.08), rgba(255,255,255,0));
-      filter: blur(6px);
+      left: 10%;
+      right: 10%;
+      bottom: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0.75;
     }
 
-    .logo-shell img {
-      position: relative;
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      display: block;
-      filter: drop-shadow(0 18px 36px rgba(0,0,0,0.45));
+    .logo {
+      width: min(100%, 360px);
+      filter:
+        drop-shadow(0 28px 38px rgba(0,0,0,.75))
+        drop-shadow(0 0 22px rgba(225,25,25,.12));
+      transform: rotate(-2deg);
     }
 
     .content {
-      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 56px;
     }
 
-    .tag {
+    .kicker {
       display: inline-flex;
       align-items: center;
-      gap: 0.55rem;
-      margin-bottom: 1.1rem;
+      gap: 10px;
+      width: fit-content;
+      margin-bottom: 22px;
       color: var(--muted);
-      font-size: 0.82rem;
-      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
+      font-weight: 700;
     }
 
-    .tag::before {
+    .kicker::before {
       content: "";
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 0 16px rgba(209, 23, 23, 0.8);
+      background: var(--red);
+      box-shadow: 0 0 22px rgba(225, 25, 25, 0.9);
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(3rem, 7vw, 5.4rem);
-      line-height: 0.92;
-      letter-spacing: -0.07em;
-      font-weight: 850;
+      font-size: clamp(3.2rem, 7.5vw, 6.2rem);
+      line-height: 0.86;
+      letter-spacing: -0.085em;
+      font-weight: 900;
     }
 
-    .lead {
-      margin: 1rem 0 0;
-      font-size: clamp(1.15rem, 2.4vw, 1.55rem);
-      color: #ffffff;
-      font-weight: 520;
+    .line {
+      width: 76px;
+      height: 4px;
+      margin: 28px 0 24px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--red), transparent);
     }
 
-    .sub {
-      margin: 1.35rem 0 0;
-      max-width: 38ch;
+    p {
+      margin: 0;
       color: var(--muted);
-      line-height: 1.75;
-      font-size: 1rem;
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      line-height: 1.7;
     }
 
-    .chips {
+    .stack {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 2rem;
+      gap: 10px;
+      margin-top: 32px;
     }
 
-    .chip {
+    .pill {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      padding: 0.78rem 1rem;
+      min-height: 40px;
+      padding: 0 14px;
       border-radius: 999px;
-      text-decoration: none;
-      color: var(--text);
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.10);
-      font-size: 0.95rem;
-      font-weight: 600;
+      color: #e5e7eb;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      font-size: 0.88rem;
+      font-weight: 650;
     }
 
-    .chip strong {
-      color: white;
-      font-weight: 700;
+    .pill.red {
+      background: rgba(225, 25, 25, 0.13);
+      border-color: rgba(225, 25, 25, 0.34);
+      color: #ffffff;
     }
 
-    .footer {
-      margin-top: 1.2rem;
-      color: #7f8696;
+    .foot {
+      margin-top: 34px;
+      color: #6b7280;
       font-size: 0.84rem;
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 820px) {
+      body {
+        padding: 14px;
+      }
+
       .card {
         grid-template-columns: 1fr;
+        min-height: auto;
+        border-radius: 28px;
       }
 
-      .visual {
-        min-height: 250px;
-        padding: 2rem 1.5rem 1rem;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
+      .wrap::before {
+        border-radius: 28px;
       }
 
-      .logo-shell {
-        width: min(100%, 220px);
+      .brand {
+        min-height: 270px;
+        padding: 28px 24px 12px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand::after {
+        left: 18%;
+        right: 18%;
+      }
+
+      .logo {
+        width: min(78vw, 260px);
       }
 
       .content {
-        padding: 1.8rem 1.4rem 2rem;
+        padding: 30px 24px 32px;
       }
 
-      .sub {
-        max-width: none;
+      .line {
+        margin: 22px 0 20px;
+      }
+
+      .stack {
+        margin-top: 26px;
       }
     }
 
-    @media (max-width: 480px) {
-      body {
-        padding: 12px;
+    @media (max-width: 440px) {
+      .brand {
+        min-height: 230px;
       }
 
-      .card {
-        border-radius: 22px;
+      .logo {
+        width: min(82vw, 230px);
       }
 
-      .visual {
-        min-height: 210px;
+      .content {
+        padding: 26px 20px 28px;
       }
 
-      .chips {
-        flex-direction: column;
-      }
-
-      .chip {
+      .pill {
         width: 100%;
+        justify-content: center;
       }
     }
   </style>
 </head>
+
 <body>
-  <div class="ambient" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
 
   <main class="wrap">
-    <section class="card">
-      <div class="visual">
-        <div class="logo-shell">
-          <img src="/logo.png" alt="Enåsen logo">
-        </div>
+    <section class="card" aria-label="Enåsen placeholder">
+      <div class="brand">
+        <img class="logo" src="/logo.png" alt="Enåsen logo">
       </div>
 
       <div class="content">
-        <div class="tag">Privat domene</div>
+        <div class="kicker">Privat domene</div>
 
         <h1>Enåsen</h1>
 
-        <p class="lead">Minimal placeholder.</p>
+        <div class="line"></div>
 
-        <p class="sub">
+        <p>
           Laget med Cloudflare og GitHub.
         </p>
 
-        <div class="chips">
-          <span class="chip"><strong>Cloudflare</strong>&nbsp;Pages / Workers</span>
-          <span class="chip"><strong>GitHub</strong>&nbsp;Deploy</span>
+        <div class="stack" aria-label="Teknologi">
+          <span class="pill red">Cloudflare</span>
+          <span class="pill">GitHub</span>
+          <span class="pill">Static deploy</span>
         </div>
 
-        <div class="footer">
+        <div class="foot">
           enaasen.no · enåsen.no
         </div>
       </div>
