@@ -4,77 +4,299 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Enåsen</title>
-  <meta name="description" content="Privat domene.">
+  <meta name="description" content="Laget med Cloudflare og GitHub.">
+  <meta name="theme-color" content="#0b0b0f">
+
   <style>
     :root {
-      color-scheme: light dark;
+      --bg: #08090c;
+      --bg-soft: #11131a;
+      --card: rgba(255, 255, 255, 0.06);
+      --card-border: rgba(255, 255, 255, 0.10);
+      --text: #f5f7fb;
+      --muted: #b0b5c2;
+      --accent: #d11717;
+      --accent-2: #ff4d4d;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      --radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(209, 23, 23, 0.16), transparent 32%),
+        radial-gradient(circle at bottom, rgba(255, 255, 255, 0.04), transparent 28%),
+        linear-gradient(180deg, #11131a 0%, #08090c 100%);
       display: grid;
       place-items: center;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f1ec;
-      color: #1f1f1f;
+      padding: 20px;
+      overflow-x: hidden;
     }
 
-    main {
-      width: min(90vw, 640px);
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .ambient::before,
+    .ambient::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(60px);
+      opacity: 0.22;
+    }
+
+    .ambient::before {
+      width: 320px;
+      height: 320px;
+      background: #c41212;
+      top: -40px;
+      left: -60px;
+    }
+
+    .ambient::after {
+      width: 260px;
+      height: 260px;
+      background: #ffffff;
+      bottom: -80px;
+      right: -60px;
+      opacity: 0.08;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .card {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      align-items: center;
+      gap: 0;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .visual {
+      min-height: 460px;
+      display: grid;
+      place-items: center;
+      padding: 2.5rem;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      background:
+        radial-gradient(circle at 50% 35%, rgba(209, 23, 23, 0.14), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    }
+
+    .logo-shell {
+      position: relative;
+      width: min(100%, 360px);
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .logo-shell::before {
+      content: "";
+      position: absolute;
+      inset: 10%;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.08), rgba(255,255,255,0));
+      filter: blur(6px);
+    }
+
+    .logo-shell img {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 18px 36px rgba(0,0,0,0.45));
+    }
+
+    .content {
       padding: 3rem;
-      background: rgba(255, 255, 255, 0.86);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      border-radius: 24px;
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.10);
-      text-align: center;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 1.1rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .tag::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 16px rgba(209, 23, 23, 0.8);
     }
 
     h1 {
-      margin: 0 0 0.75rem;
-      font-size: clamp(2.5rem, 8vw, 5rem);
-      letter-spacing: -0.06em;
-      font-weight: 750;
+      margin: 0;
+      font-size: clamp(3rem, 7vw, 5.4rem);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+      font-weight: 850;
     }
 
-    p {
-      margin: 0.5rem 0;
-      line-height: 1.6;
-      font-size: 1.05rem;
+    .lead {
+      margin: 1rem 0 0;
+      font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+      color: #ffffff;
+      font-weight: 520;
     }
 
-    .muted {
-      color: #666;
+    .sub {
+      margin: 1.35rem 0 0;
+      max-width: 38ch;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 1rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.78rem 1rem;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
       font-size: 0.95rem;
+      font-weight: 600;
     }
 
-    a {
-      color: inherit;
-      text-underline-offset: 0.2em;
+    .chip strong {
+      color: white;
+      font-weight: 700;
     }
 
-    @media (prefers-color-scheme: dark) {
+    .footer {
+      margin-top: 1.2rem;
+      color: #7f8696;
+      font-size: 0.84rem;
+    }
+
+    @media (max-width: 860px) {
+      .card {
+        grid-template-columns: 1fr;
+      }
+
+      .visual {
+        min-height: 250px;
+        padding: 2rem 1.5rem 1rem;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+
+      .logo-shell {
+        width: min(100%, 220px);
+      }
+
+      .content {
+        padding: 1.8rem 1.4rem 2rem;
+      }
+
+      .sub {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 480px) {
       body {
-        background: #151515;
-        color: #f2f2f2;
+        padding: 12px;
       }
 
-      main {
-        background: rgba(30, 30, 30, 0.88);
-        border-color: rgba(255, 255, 255, 0.12);
+      .card {
+        border-radius: 22px;
       }
 
-      .muted {
-        color: #aaa;
+      .visual {
+        min-height: 210px;
+      }
+
+      .chips {
+        flex-direction: column;
+      }
+
+      .chip {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>Enåsen</h1>
-    <p>Privat domene.</p>
-    <p class="muted">Nettsiden deployes nå via GitHub og Cloudflare.</p>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="card">
+      <div class="visual">
+        <div class="logo-shell">
+          <img src="/logo.png" alt="Enåsen logo">
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="tag">Privat domene</div>
+
+        <h1>Enåsen</h1>
+
+        <p class="lead">Minimal placeholder. Maksimalt tilstrekkelig.</p>
+
+        <p class="sub">
+          Laget med Cloudflare og GitHub.
+        </p>
+
+        <div class="chips">
+          <span class="chip"><strong>Cloudflare</strong>&nbsp;Pages / Workers</span>
+          <span class="chip"><strong>GitHub</strong>&nbsp;Deploy</span>
+        </div>
+
+        <div class="footer">
+          enaasen.no · enåsen.no
+        </div>
+      </div>
+    </section>
   </main>
 </body>
 </html>
