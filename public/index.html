@@ -188,24 +188,74 @@
       margin-top: 32px;
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      min-height: 40px;
-      padding: 0 14px;
-      border-radius: 999px;
-      color: #e5e7eb;
-      background: rgba(255, 255, 255, 0.055);
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      font-size: 0.88rem;
-      font-weight: 650;
-    }
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  font-size: 0.88rem;
+  font-weight: 650;
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
 
-    .pill.red {
-      background: rgba(225, 25, 25, 0.13);
-      border-color: rgba(225, 25, 25, 0.34);
-      color: #ffffff;
-    }
+.pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.16), transparent 58%);
+  transition: opacity 160ms ease;
+}
+
+.pill:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.085);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+}
+
+.pill:hover::before {
+  opacity: 1;
+}
+
+.pill:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.22);
+}
+
+.pill:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 4px;
+}
+
+.pill.red {
+  background: rgba(225, 25, 25, 0.13);
+  border-color: rgba(225, 25, 25, 0.34);
+  color: #ffffff;
+}
+
+.pill.red:hover {
+  background: rgba(225, 25, 25, 0.22);
+  border-color: rgba(225, 25, 25, 0.58);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.32),
+    0 0 28px rgba(225,25,25,0.18);
+}
 
     .foot {
       margin-top: 34px;
@@ -298,12 +348,17 @@
           Laget med Cloudflare og GitHub.
         </p>
 
-        <div class="stack" aria-label="Teknologi">
-          <span class="pill red">Cloudflare</span>
-          <span class="pill">GitHub</span>
-          <span class="pill">Static deploy</span>
-        </div>
+<div class="stack" aria-label="Teknologi">
+  <a class="pill red" href="https://www.cloudflare.com" target="_blank" rel="noopener noreferrer">
+    Cloudflare
+  </a>
 
+  <a class="pill" href="https://github.com/brealorg/enaasen-site" target="_blank" rel="noopener noreferrer">
+    GitHub
+  </a>
+
+  <span class="pill">Static deploy</span>
+</div>
         <div class="foot">
           enaasen.no · enåsen.no
         </div>
