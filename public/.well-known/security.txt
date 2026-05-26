@@ -1,4 +1,4 @@
-Contact: mailto:post@enaasen.no
+Contact: mailto enaasen@gmail.com
 Expires: 2027-05-26T00:00:00.000Z
 Preferred-Languages: no, en
 Canonical: https://enaasen.no/.well-known/security.txt
