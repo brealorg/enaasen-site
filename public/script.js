@@ -1,132 +1,166 @@
 (() => {
+  "use strict";
+
+  const SITE_LAUNCHED_AT = new Date("2026-05-25T00:00:00+02:00");
+
+  const deployInfo =
+    window.deployInfo ||
+    window.__DEPLOY_INFO__ ||
+    window.__BUILD_META__ ||
+    {};
+
   const setField = (name, value) => {
-    const element = document.querySelector(`[data-field="${name}"]`);
-    if (!element) return;
-
-    element.textContent = value || "unknown";
-    element.classList.remove("pending");
+    document.querySelectorAll(`[data-field="${name}"]`).forEach((element) => {
+      element.textContent = value;
+    });
   };
 
-  const getDeployInfo = () => {
-    return window.DEPLOY_INFO || null;
+  const formatDuration = (fromDate, toDate = new Date()) => {
+    const date = fromDate instanceof Date ? fromDate : new Date(fromDate);
+
+    if (Number.isNaN(date.getTime())) {
+      return "unknown";
+    }
+
+    let seconds = Math.max(0, Math.floor((toDate - date) / 1000));
+
+    const days = Math.floor(seconds / 86400);
+    seconds %= 86400;
+
+    const hours = Math.floor(seconds / 3600);
+    seconds %= 3600;
+
+    const minutes = Math.floor(seconds / 60);
+
+    if (days > 0) return `${days}d ${hours}h`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    if (minutes > 0) return `${minutes}m`;
+
+    return "now";
   };
 
-const siteLaunchedAt = new Date("2026-05-25T00:00:00+02:00");
+  const getCommitTime = () => {
+    const value =
+      deployInfo.commitTime ||
+      deployInfo.updated ||
+      deployInfo.buildTime ||
+      deployInfo.time ||
+      null;
 
-const formatDuration = (date) => {
-  const now = new Date();
-  let seconds = Math.max(0, Math.floor((now - date) / 1000));
+    if (!value) {
+      return null;
+    }
 
-  const days = Math.floor(seconds / 86400);
-  seconds %= 86400;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  };
 
-  const hours = Math.floor(seconds / 3600);
-  seconds %= 3600;
+  const getCommitHash = () => {
+    return (
+      deployInfo.commit ||
+      deployInfo.sha ||
+      deployInfo.hash ||
+      "local"
+    );
+  };
 
-  const minutes = Math.floor(seconds / 60);
+  const updateStatus = () => {
+    const commitTime = getCommitTime();
 
-  if (days > 0) return `${days}d ${hours}h`;
-  if (hours > 0) return `${hours}h ${minutes}m`;
-  if (minutes > 0) return `${minutes}m`;
+    setField("siteAge", formatDuration(SITE_LAUNCHED_AT));
+    setField("updatedAgo", commitTime ? `${formatDuration(commitTime)} ago` : "unknown");
+    setField("commit", getCommitHash());
+  };
 
-  return "now";
-};
+  const parseCloudflareTrace = (text) => {
+    return Object.fromEntries(
+      text
+        .trim()
+        .split("\n")
+        .map((line) => line.split("="))
+        .filter((parts) => parts.length === 2)
+    );
+  };
 
-const updateStatus = () => {
-  if (!deployInfo?.commitTime) {
-    setField("siteAge", formatDuration(siteLaunchedAt));
-    setField("updatedAgo", "unknown");
-    setField("commit", "unknown");
-    return;
-  }
+  const detectBrowser = () => {
+    const ua = navigator.userAgent;
 
-  setField("siteAge", formatDuration(siteLaunchedAt));
-  setField("updatedAgo", `${formatDuration(new Date(deployInfo.commitTime))} ago`);
-  setField("commit", deployInfo.commit || "unknown");
-};
-  const parseTrace = (text) => {
-    const result = {};
+    if (ua.includes("Firefox/")) return "Firefox";
+    if (ua.includes("Edg/")) return "Edge";
+    if (ua.includes("OPR/") || ua.includes("Opera/")) return "Opera";
+    if (ua.includes("Chrome/") && !ua.includes("Chromium/")) return "Chrome";
+    if (ua.includes("Safari/") && !ua.includes("Chrome/")) return "Safari";
 
-    text
-      .trim()
-      .split("\n")
-      .forEach((line) => {
-        const index = line.indexOf("=");
-        if (index === -1) return;
+    return "unknown";
+  };
 
-        const key = line.slice(0, index);
-        const value = line.slice(index + 1);
+  const detectOs = () => {
+    const ua = navigator.userAgent;
+    const platform = navigator.platform || "";
 
-        result[key] = value;
+    if (ua.includes("Windows")) return "Windows";
+    if (ua.includes("Android")) return "Android";
+    if (ua.includes("iPhone") || ua.includes("iPad")) return "iOS";
+    if (ua.includes("Mac OS X") || platform.includes("Mac")) return "macOS";
+    if (ua.includes("Linux") || platform.includes("Linux")) return "Linux";
+
+    return "unknown";
+  };
+
+  const updateClientFields = () => {
+    setField("browser", detectBrowser());
+    setField("os", detectOs());
+    setField("language", navigator.language || "unknown");
+
+    try {
+      setField("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown");
+    } catch {
+      setField("timezone", "unknown");
+    }
+
+    setField("screen", `${window.screen.width}x${window.screen.height}`);
+    setField("ua", navigator.userAgent || "unknown");
+  };
+
+  const updateCloudflareFields = async () => {
+    try {
+      const response = await fetch("/cdn-cgi/trace", {
+        cache: "no-store",
       });
 
-    return result;
-  };
-
-  const detectBrowser = (ua) => {
-    if (/Edg\//.test(ua)) return "Microsoft Edge";
-    if (/OPR\//.test(ua)) return "Opera";
-    if (/Firefox\//.test(ua)) return "Firefox";
-    if (/Chrome\//.test(ua) && !/Chromium\//.test(ua)) return "Chrome";
-    if (/Chromium\//.test(ua)) return "Chromium";
-    if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return "Safari";
-    return "unknown";
-  };
-
-  const detectOs = (ua) => {
-    if (/Android/i.test(ua)) return "Android";
-    if (/iPhone|iPad|iPod/i.test(ua)) return "iOS / iPadOS";
-    if (/Windows/i.test(ua)) return "Windows";
-    if (/Mac OS X|Macintosh/i.test(ua)) return "macOS";
-    if (/Linux/i.test(ua)) return "Linux";
-    return "unknown";
-  };
-
-	updateStatus();
-	window.setInterval(updateStatus, 60000);
-
-  const localUa = navigator.userAgent || "unknown";
-
-  setField("browser", detectBrowser(localUa));
-  setField("os", detectOs(localUa));
-  setField("language", navigator.language || "unknown");
-  setField("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown");
-  setField(
-    "screen",
-    `${window.screen.width}x${window.screen.height} @ ${window.devicePixelRatio || 1}x`
-  );
-  setField("ua", localUa);
-
-  fetch("/cdn-cgi/trace", { cache: "no-store" })
-    .then((response) => {
       if (!response.ok) {
-        throw new Error("Cloudflare trace unavailable");
+        throw new Error(`trace failed: ${response.status}`);
       }
 
-      return response.text();
-    })
-    .then((text) => {
-      const trace = parseTrace(text);
+      const trace = parseCloudflareTrace(await response.text());
 
-      setField("ip", trace.ip);
-      setField("country", trace.loc);
-      setField("colo", trace.colo);
-      setField("http", trace.http);
-      setField("tls", trace.tls);
-      setField("warp", trace.warp);
+      setField("ip", trace.ip || "unknown");
+      setField("country", trace.loc || "unknown");
+      setField("colo", trace.colo || "unknown");
+      setField("http", trace.http || "unknown");
+      setField("tls", trace.tls || "unknown");
+      setField("warp", trace.warp || "unknown");
+    } catch {
+      setField("ip", "unavailable");
+      setField("country", "unavailable");
+      setField("colo", "unavailable");
+      setField("http", "unavailable");
+      setField("tls", "unavailable");
+      setField("warp", "unavailable");
+    }
+  };
 
-      if (trace.uag) {
-        setField("browser", detectBrowser(trace.uag));
-        setField("os", detectOs(trace.uag));
-        setField("ua", trace.uag);
-      }
-    })
-    .catch(() => {
-      setField("ip", "unavailable outside Cloudflare");
-      setField("country", "unknown");
-      setField("colo", "unknown");
-      setField("http", "unknown");
-      setField("tls", "unknown");
-      setField("warp", "unknown");
-    });
+  const init = () => {
+    updateStatus();
+    updateClientFields();
+    updateCloudflareFields();
+
+    window.setInterval(updateStatus, 60000);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();
