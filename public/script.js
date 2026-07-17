@@ -164,3 +164,83 @@
     init();
   }
 })();
+
+// MORPHE_ENAASEN_MOBILE_STATUS_V1_BEGIN
+function upgradeMobileStatusStrip() {
+  if (document.documentElement.dataset.enasenMobileStatusV1 === "1") {
+    return;
+  }
+
+  const siteAgeNode = document.getElementById("siteAge");
+  const updatedAgoNode = document.getElementById("updatedAgo");
+
+  if (!siteAgeNode || !updatedAgoNode) {
+    return;
+  }
+
+  const currentSiteAge = siteAgeNode.textContent.trim() || "unknown";
+  const currentUpdatedAgo = updatedAgoNode.textContent.trim() || "unknown";
+
+  let host = siteAgeNode.parentElement;
+
+  while (host && host !== document.body && !host.contains(updatedAgoNode)) {
+    host = host.parentElement;
+  }
+
+  if (!host || host === document.body) {
+    return;
+  }
+
+  const closestStatusShell = siteAgeNode.closest(
+    ".status-strip, .status-pill, .status, .live-status, .deploy-status, .meta-pill, .pill"
+  );
+
+  if (closestStatusShell && closestStatusShell.contains(updatedAgoNode)) {
+    host = closestStatusShell;
+  }
+
+  host.classList.add("status-strip");
+  host.setAttribute("aria-label", "Site status");
+
+  if (host.parentElement) {
+    host.parentElement.classList.add("has-status-strip-v1");
+  }
+
+  host.innerHTML = `
+    <div class="status-row status-row-primary">
+      <span class="status-item">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="status-label">live:</span>
+        <span class="status-value" id="siteAge">${currentSiteAge}</span>
+      </span>
+
+      <span class="status-item">
+        <span class="status-label">updated:</span>
+        <span class="status-value" id="updatedAgo">${currentUpdatedAgo}</span>
+      </span>
+    </div>
+
+    <div class="status-row status-row-secondary">
+      <span class="status-item">
+        <span class="status-label">deploy:</span>
+        <span class="status-value">github/main</span>
+      </span>
+
+      <span class="status-item">
+        <span class="status-label">status:</span>
+        <span class="status-value">online</span>
+      </span>
+    </div>
+  `;
+
+  document.documentElement.dataset.enasenMobileStatusV1 = "1";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  upgradeMobileStatusStrip();
+
+  if (typeof updateStatus === "function") {
+    updateStatus();
+  }
+});
+// MORPHE_ENAASEN_MOBILE_STATUS_V1_END

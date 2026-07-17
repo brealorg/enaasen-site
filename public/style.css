@@ -382,3 +382,109 @@ code {
     transition: none !important;
   }
 }
+
+/* MORPHE_ENAASEN_MOBILE_STATUS_V1_BEGIN */
+.status-strip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-width: 0;
+  gap: 0.65rem;
+  overflow: hidden;
+}
+
+.status-strip .status-row {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.65rem;
+  white-space: nowrap;
+}
+
+.status-strip .status-row + .status-row::before {
+  content: "/";
+  opacity: 0.45;
+  margin-right: 0.05rem;
+}
+
+.status-strip .status-item {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.status-strip .status-label {
+  opacity: 0.72;
+}
+
+.status-strip .status-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-strip .status-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 18px currentColor;
+}
+
+@media (max-width: 640px) {
+  .has-status-strip-v1 {
+    flex-wrap: wrap;
+    row-gap: 0.65rem;
+  }
+
+  .has-status-strip-v1 .status-strip {
+    flex: 1 0 100%;
+  }
+
+  .status-strip {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .status-strip .status-row {
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.52rem 0.72rem;
+    border: 1px solid rgba(255, 64, 220, 0.38);
+    border-radius: 999px;
+    background: rgba(255, 64, 220, 0.08);
+    box-shadow: 0 0 22px rgba(255, 64, 220, 0.10);
+  }
+
+  .status-strip .status-row + .status-row::before {
+    content: none;
+  }
+
+  .status-strip .status-item {
+    max-width: 50%;
+  }
+
+  .status-strip .status-label,
+  .status-strip .status-value {
+    font-size: 0.78rem;
+    line-height: 1.15;
+  }
+
+  .status-strip .status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+}
+/* MORPHE_ENAASEN_MOBILE_STATUS_V1_END */
